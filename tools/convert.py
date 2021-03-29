@@ -5,26 +5,22 @@ Code was modified to make it work with python3
 """
 import csv
 import os
-import sys
-from importlib import reload
 
 from pymarc import MARCReader
 
-reload(sys)
-sys.setdefaultencoding('utf8')
-
 
 def main():
+    """ Main function
+    """
     for filename in os.listdir('../data/mrc/'):
         if os.path.isdir('data/mrc/' + filename) or filename[0] == '.':
             continue
 
-        with open('../data/csv/' + os.path.splitext(filename)[0] + '.csv', 'wb') as f, \
-             open('../data/mrc/' + filename, 'rb') as fh:
+        with open('../data/csv/' + os.path.splitext(filename)[0] + '.csv', 'wb') as input_file, \
+                open('../data/mrc/' + filename, 'rb') as output_file:
 
-            reader = MARCReader(fh)
-            writer = csv.writer(f)
-            # TODO Choose columns to convert either to csv or some other format
+            reader = MARCReader(output_file)
+            writer = csv.writer(input_file)
             writer.writerow(['isbn', 'title', 'author',
                              'publisher', 'pub_place', 'pub_year',
                              'extent', 'dimensions', 'subject', 'inclusion_date',
@@ -52,21 +48,27 @@ def main():
 
 
 def get_title(record):
-    # pymarc has a title() method that is similar to this, but it doesn't
-    # concatenate subtitle and title properly
+    """ Get proper title
+    pymarc has a title() method that is similar to this, but it doesn't
+    concatenate subtitle and title properly
+    """
     if '245' in record and 'a' in record['245']:
         title = clean(record['245']['a'])
         if 'b' in record['245']:
             title += ' ' + clean(record['245']['b'])
         return title
-    else:
-        return None
+
+    return None
 
 
 def clean(element, is_author=False):
-    if element is None or not element.strip():
-        return None
-    else:
+    """ Clean records from punctuation marks
+
+    :param element:
+    :param is_author:
+    :return:
+    """
+    if element is not None and element.strip():
         element = element.strip()
 
         for character in [',', ';', ':', '/']:
@@ -78,6 +80,8 @@ def clean(element, is_author=False):
             return element[:-1].strip()
 
         return element.strip()
+
+    return None
 
 
 if __name__ == '__main__':
