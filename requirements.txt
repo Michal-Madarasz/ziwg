@@ -1,1 +1,2 @@
-pymarc>3.2.0
+pandas
+pymarc

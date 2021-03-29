@@ -1,5 +1,6 @@
 # DO NOT IGNORE TEST FILE
-!data/bibs-obiekt_trojwymiarowy.marc
+!data/mrc/bibs-obiekt_trojwymiarowy.marc
+!data/csv/bibs-test.csv
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
